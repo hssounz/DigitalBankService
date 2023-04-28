@@ -3,15 +3,18 @@ package com.example.DigitalBankService.services;
 import com.example.DigitalBankService.dao.AccountOperationRepository;
 import com.example.DigitalBankService.dao.BankAccountRepository;
 import com.example.DigitalBankService.dao.CustomerRepository;
+import com.example.DigitalBankService.dtos.CustomerDTO;
 import com.example.DigitalBankService.entities.*;
 import com.example.DigitalBankService.enums.AccountStatus;
 import com.example.DigitalBankService.enums.OperationType;
 import com.example.DigitalBankService.exceptions.*;
+import com.example.DigitalBankService.mappers.IBankEntitiesMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -21,17 +24,20 @@ public class BankAccountServiceImpl implements IBankAccountService {
     private BankAccountRepository bankAccountRepository;
     private CustomerRepository customerRepository;
     private AccountOperationRepository accountOperationRepository;
+    private IBankEntitiesMapper dtoMapper;
 
-    public BankAccountServiceImpl(BankAccountRepository bankAccountRepository, CustomerRepository customerRepository, AccountOperationRepository accountOperationRepository) {
+    public BankAccountServiceImpl(BankAccountRepository bankAccountRepository, CustomerRepository customerRepository, AccountOperationRepository accountOperationRepository, IBankEntitiesMapper bankEntitiesMapper) {
         this.bankAccountRepository = bankAccountRepository;
         this.customerRepository = customerRepository;
         this.accountOperationRepository = accountOperationRepository;
+        this.dtoMapper = bankEntitiesMapper;
     }
 
     @Override
-    public Customer saveCustomer(Customer customer) {
+    public CustomerDTO saveCustomer(CustomerDTO customerDTO) {
         log.info("Saving a new customer");
-        return customerRepository.save(customer);
+        Customer savedCustomer = customerRepository.save(dtoMapper.fromCustomerDto(customerDTO));
+        return dtoMapper.fromCustomer(savedCustomer);
     }
 
     @Override
@@ -57,8 +63,21 @@ public class BankAccountServiceImpl implements IBankAccountService {
     }
 
     @Override
-    public List<Customer> getCustomers() {
-        return customerRepository.findAll();
+    public List<CustomerDTO> getCustomers() {
+        List<Customer> customers = customerRepository.findAll();
+
+        return customers
+                .stream()
+                .map(customer -> dtoMapper.fromCustomer(customer))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public CustomerDTO getCustomer(Long customerId) throws CustomerNotFoundException {
+
+        return dtoMapper.fromCustomer(
+                customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new)
+        );
     }
 
     @Override

@@ -1,10 +1,10 @@
 package com.example.DigitalBankService.web;
 
+import com.example.DigitalBankService.dtos.CustomerDTO;
 import com.example.DigitalBankService.entities.Customer;
+import com.example.DigitalBankService.exceptions.CustomerNotFoundException;
 import com.example.DigitalBankService.services.IBankAccountService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,7 +18,20 @@ public class CustomerController {
     }
 
     @GetMapping("/customers")
-    public List<Customer> customers() {
+    public List<CustomerDTO> customers() {
         return bankAccountService.getCustomers();
+    }
+    @GetMapping("/customers/{id}")
+    public CustomerDTO getCustomer(@PathVariable(name = "id") Long customerId) throws CustomerNotFoundException {
+        return bankAccountService.getCustomer(customerId);
+    }
+
+    @PostMapping("/customers")
+    public CustomerDTO saveCustomer(@RequestBody CustomerDTO request) {
+
+        /*
+        * TODO
+         */
+    return null;
     }
 }
