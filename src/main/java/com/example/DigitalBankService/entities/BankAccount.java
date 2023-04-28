@@ -5,21 +5,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.UUID;
 
 @Entity @Data @AllArgsConstructor @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "TYPE", length = 2)
-public class BankAccount {
+public abstract class BankAccount {
 
     @Id
-    private Long id;
+    private String id;
     private double balance;
 
     @CreationTimestamp
@@ -56,6 +56,7 @@ public class BankAccount {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        this.id = UUID.randomUUID().toString();
     }
 
     @PreUpdate
