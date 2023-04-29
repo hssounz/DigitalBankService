@@ -1,25 +1,10 @@
 package com.example.DigitalBankService;
 
-import com.example.DigitalBankService.dao.AccountOperationRepository;
-import com.example.DigitalBankService.dao.BankAccountRepository;
-import com.example.DigitalBankService.dao.CustomerRepository;
-import com.example.DigitalBankService.entities.BankAccount;
-import com.example.DigitalBankService.entities.CurrentsAccount;
-import com.example.DigitalBankService.entities.Customer;
-import com.example.DigitalBankService.enums.AccountStatus;
-import com.example.DigitalBankService.exceptions.AccountOperationsException;
-import com.example.DigitalBankService.exceptions.AccountTypeException;
-import com.example.DigitalBankService.exceptions.BankAccountNotFoundException;
-import com.example.DigitalBankService.exceptions.CustomerNotFoundException;
-import com.example.DigitalBankService.services.IBankAccountService;
+import com.example.DigitalBankService.services.BankAccountService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
 
 @SpringBootApplication
 public class DigitalBankServiceApplication {
@@ -29,11 +14,11 @@ public class DigitalBankServiceApplication {
 	}
 
 	@Bean
-	CommandLineRunner start(IBankAccountService bankAccountService) {
+	CommandLineRunner start(BankAccountService bankAccountService) {
 		return args -> {
 
 //			Stream.of("Hassen", "Leila", "Mohammed").forEach(c -> {
-//				Customer customer = new Customer();
+//				CustomerDTO customer = new CustomerDTO();
 //				customer.setEmail(c + "@gmail.com");
 //				customer.setFullName(c);
 //				bankAccountService.saveCustomer(customer);

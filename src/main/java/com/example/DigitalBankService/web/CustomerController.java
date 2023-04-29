@@ -1,9 +1,8 @@
 package com.example.DigitalBankService.web;
 
 import com.example.DigitalBankService.dtos.CustomerDTO;
-import com.example.DigitalBankService.entities.Customer;
 import com.example.DigitalBankService.exceptions.CustomerNotFoundException;
-import com.example.DigitalBankService.services.IBankAccountService;
+import com.example.DigitalBankService.services.CustomerService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,27 +10,31 @@ import java.util.List;
 @RestController
 //@RequestMapping("/customers")
 public class CustomerController {
-    private IBankAccountService bankAccountService;
+    private CustomerService customerService;
 
-    public CustomerController(IBankAccountService bankAccountService) {
-        this.bankAccountService = bankAccountService;
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
     }
 
     @GetMapping("/customers")
     public List<CustomerDTO> customers() {
-        return bankAccountService.getCustomers();
+        return customerService.getCustomers();
     }
     @GetMapping("/customers/{id}")
     public CustomerDTO getCustomer(@PathVariable(name = "id") Long customerId) throws CustomerNotFoundException {
-        return bankAccountService.getCustomer(customerId);
+        return customerService.getCustomer(customerId);
     }
-
     @PostMapping("/customers")
     public CustomerDTO saveCustomer(@RequestBody CustomerDTO request) {
-
-        /*
-        * TODO
-         */
-    return null;
+        return customerService.saveCustomer(request);
+    }
+    @PutMapping("/customers/{customerId}")
+    public CustomerDTO updateCustomer(@PathVariable Long customerId, @RequestBody CustomerDTO customerDTO) {
+        customerDTO.setId(customerId);
+        return customerService.updateCustomer(customerDTO);
+    }
+    @DeleteMapping("/customers/{id}")
+    public void deleteCustomer(@PathVariable Long id) {
+        customerService.deleteCustomer(id);
     }
 }
